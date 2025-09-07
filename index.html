@@ -6,15 +6,7 @@
 <title>Catálogo de Talentos</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-:root{
-  --brand-blue:#0b5394;--brand-green:#22b14c;
-  --bg-light:#f0f4f8;--bg-dark:#111827;
-  --card-light:#fff;--card-dark:#1f2937;
-  --ink-light:#111827;--ink-dark:#f9fafb;
-  --muted:#6b7280;
-  --shadow:0 8px 24px rgba(0,0,0,.15);
-  --radius:16px;--transition:.3s ease;
-}
+:root{ --brand-blue:#0b5394;--brand-green:#22b14c; --bg-light:#f0f4f8;--bg-dark:#111827; --card-light:#fff;--card-dark:#1f2937; --ink-light:#111827;--ink-dark:#f9fafb; --muted:#6b7280; --shadow:0 8px 24px rgba(0,0,0,.15); --radius:16px; --transition:.3s ease; }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Inter,sans-serif;background:var(--bg-light);color:var(--ink-light);transition:background var(--transition),color var(--transition)}
 body.dark{background:var(--bg-dark);color:var(--ink-dark)}
@@ -108,115 +100,53 @@ body.dark .resume-sec{background:#0f2133;border-color:#264b6b}
 <script>
 // ===== I18N =====
 const I18N = {
-  pt: {
-    htmlLang: 'pt-BR', title:'Catálogo de Talentos',
-    searchPlaceholder:'🔎 Buscar por nome ou habilidade',
-    allRoles:'Todas as profissões', allCities:'Todas as cidades', clear:'Limpar', results: n=> `${n} resultados`,
-    job:'Profissão', city:'Cidade', address:'Endereço', skills:'Habilidades', about:'Sobre', experience:'Experiência', education:'Formação', contacts:'Contatos',
-    viewCV:'🗂️ Ver currículo', download:'⬇️ Baixar currículo', whatsapp:'💬 WhatsApp', createdBy:'Criado por Marcelo Emanoel'
-  },
-  en: {
-    htmlLang: 'en', title:'Talent Catalog',
-    searchPlaceholder:'🔎 Search by name or skill',
-    allRoles:'All professions', allCities:'All cities', clear:'Clear', results: n=> `${n} results`,
-    job:'Profession', city:'City', address:'Address', skills:'Skills', about:'About', experience:'Experience', education:'Education', contacts:'Contacts',
-    viewCV:'🗂️ View résumé', download:'⬇️ Download résumé', whatsapp:'💬 WhatsApp', createdBy:'Created by Marcelo Emanoel'
-  },
-  es: {
-    htmlLang: 'es', title:'Catálogo de Talentos',
-    searchPlaceholder:'🔎 Buscar por nombre o habilidad',
-    allRoles:'Todas las profesiones', allCities:'Todas las ciudades', clear:'Limpiar', results: n=> `${n} resultados`,
-    job:'Profesión', city:'Ciudad', address:'Dirección', skills:'Habilidades', about:'Acerca de', experience:'Experiencia', education:'Formación', contacts:'Contactos',
-    viewCV:'🗂️ Ver currículum', download:'⬇️ Descargar currículum', whatsapp:'💬 WhatsApp', createdBy:'Creado por Marcelo Emanoel'
-  }
+  pt: { htmlLang:'pt-BR', title:'Catálogo de Talentos', searchPlaceholder:'🔎 Buscar por nome ou habilidade', allRoles:'Todas as profissões', allCities:'Todas as cidades', clear:'Limpar', results:n=>`${n} resultados`, job:'Profissão', city:'Cidade', address:'Endereço', skills:'Habilidades', about:'Sobre', experience:'Experiência', education:'Formação', contacts:'Contatos', viewCV:'🗂️ Ver currículo', download:'⬇️ Baixar currículo', whatsapp:'💬 WhatsApp', createdBy:'Criado por Marcelo Emanoel' },
+  en: { htmlLang:'en', title:'Talent Catalog', searchPlaceholder:'🔎 Search by name or skill', allRoles:'All professions', allCities:'All cities', clear:'Clear', results:n=>`${n} results`, job:'Profession', city:'City', address:'Address', skills:'Skills', about:'About', experience:'Experience', education:'Education', contacts:'Contacts', viewCV:'🗂️ View résumé', download:'⬇️ Download résumé', whatsapp:'💬 WhatsApp', createdBy:'Created by Marcelo Emanoel' },
+  es: { htmlLang:'es', title:'Catálogo de Talentos', searchPlaceholder:'🔎 Buscar por nombre o habilidad', allRoles:'Todas las profesiones', allCities:'Todas las ciudades', clear:'Limpiar', results:n=>`${n} resultados`, job:'Profesión', city:'Ciudad', address:'Dirección', skills:'Habilidades', about:'Acerca de', experience:'Experiencia', education:'Formación', contacts:'Contactos', viewCV:'🗂️ Ver currículum', download:'⬇️ Descargar currículum', whatsapp:'💬 WhatsApp', createdBy:'Creado por Marcelo Emanoel' }
 };
-
 let currentLang='pt';
 
-// ===== Sample Data (mock) =====
-const TALENTS = [
-  {
-    id:'t1',
-    name:'Ana Beatriz Silva',
-    photo:'https://i.pravatar.cc/200?img=5',
-    role:'Analista de Projetos',
-    city:'Brasília, DF',
-    address:'Asa Norte, CLN 210',
-    whatsapp:'+5561999990001',
-    skills:['PMO','Scrum','Excel','Power BI'],
-    about:'Profissional com 5+ anos em PMO, foco em indicadores e melhoria contínua.',
-    experience:[
-      {company:'TechNova', title:'Project Analyst', period:'2022–Atual', desc:'KPIs, cronogramas e gestão de riscos.'},
-      {company:'InovaBR', title:'Assistente de Projetos', period:'2019–2022', desc:'Suporte a times ágeis e documentação.'}
-    ],
-    education:['Bacharelado em Administração – UNB (2018)']
-  },
-  {
-    id:'t2',
-    name:'Carlos Eduardo Ramos',
-    photo:'https://i.pravatar.cc/200?img=12',
-    role:'Desenvolvedor Front-end',
-    city:'Sobradinho, DF',
-    address:'Qd 8, Conj B',
-    whatsapp:'+5561988882222',
-    skills:['JavaScript','React','CSS','Acessibilidade'],
-    about:'Front-end focado em performance e acessibilidade web.',
-    experience:[
-      {company:'WebWorks', title:'Front-end Dev', period:'2021–Atual', desc:'SPAs, otimização e testes.'},
-      {company:'Freelancer', title:'Web Dev', period:'2018–2021', desc:'Sites institucionais e landing pages.'}
-    ],
-    education:['Tecnólogo em Sistemas – IESB (2017)']
-  },
-  {
-    id:'t3',
-    name:'Mariana Lopes',
-    photo:'https://i.pravatar.cc/200?img=32',
-    role:'Designer UX/UI',
-    city:'Ceilândia, DF',
-    address:'P Norte',
-    whatsapp:'+5561977773333',
-    skills:['UX Research','Figma','Design System','Prototipagem'],
-    about:'Designer centrada no usuário com experiência em produtos educacionais.',
-    experience:[
-      {company:'EduTech', title:'UX Designer', period:'2020–Atual', desc:'Pesquisas e protótipos de alta fidelidade.'},
-      {company:'Studio Criativo', title:'UI Designer', period:'2017–2020', desc:'Identidade visual e web design.'}
-    ],
-    education:['Bacharelado em Design – UCB (2016)']
-  },
-  {
-    id:'t4',
-    name:'João Pedro Alves',
-    photo:'https://i.pravatar.cc/200?img=15',
-    role:'Eletricista Predial',
-    city:'Taguatinga, DF',
-    address:'QNL 10',
-    whatsapp:'+5561966661111',
-    skills:['Instalações','Manutenção','NR-10','Leitura de projetos'],
-    about:'Atuação em instalações residenciais e comerciais, com certificação NR-10.',
-    experience:[
-      {company:'Construtora Alfa', title:'Eletricista', period:'2019–Atual', desc:'Montagem de quadros e cabeamento.'}
-    ],
-    education:['Curso Técnico em Eletrotécnica – SENAI (2018)']
-  },
-  {
-    id:'t5',
-    name:'Sofia Martins',
-    photo:'https://i.pravatar.cc/200?img=45',
-    role:'Auxiliar Administrativo',
-    city:'Gama, DF',
-    address:'Setor Central',
-    whatsapp:'+5561955554444',
-    skills:['Atendimento','Planilhas','Arquivamento','Redação'],
-    about:'Organizada, comunicativa e orientada a resultados.',
-    experience:[
-      {company:'ServMais', title:'Aux. Administrativo', period:'2020–Atual', desc:'Atendimento e controle de documentos.'}
-    ],
-    education:['Ensino Médio Completo (2019)']
-  }
-];
+// ===== Google Sheets (GViz) — Fonte de dados =====
+// Planilha deve estar como "Qualquer pessoa com o link pode visualizar"
+const SHEET_ID = '1OetXQjG6FioUm1e_l5oR-ufXztYE55Ao';
+const SHEET_GID = '0'; // altere se usar outra aba
 
-// ===== State =====
-let filtered = TALENTS.slice();
+async function fetchSheetGViz(sheetId, gid){
+  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=${gid}`;
+  const res = await fetch(url, {cache:'no-store'});
+  const txt = await res.text();
+  const json = JSON.parse(txt.replace(/^.*setResponse\(/,'').replace(/\);?\s*$/,''));
+  const cols = json.table.cols.map(c => (c && (c.label||c.id||'')).toString().trim().toLowerCase());
+  const rows = json.table.rows.map(r => r.c.map(c => (c ? (c.f||c.v||'') : '')));
+  return { cols, rows };
+}
+
+function sheetRowToTalent(cols, values){
+  const norm = s => (s||'').toString().trim();
+  const get = key => { const i = cols.indexOf(key); return i>-1 ? norm(values[i]) : ''; };
+  const skills = get('skills').split(/\s*,\s*/).filter(Boolean);
+  const exp = get('experience').split(/\s*;\s*/).filter(Boolean).map(item=>{
+    const [company='', title='', period='', desc=''] = item.split('|');
+    return { company:company.trim(), title:title.trim(), period:period.trim(), desc:desc.trim() };
+  });
+  const education = get('education').split(/\s*;\s*/).filter(Boolean);
+  let id = get('id'); try{ if(!id) id = crypto.randomUUID(); }catch(_) { id = String(Math.random()).slice(2); }
+  return { id, name:get('name'), photo:get('photo')||'https://i.pravatar.cc/200', role:get('role'), city:get('city'), address:get('address'), whatsapp:get('whatsapp'), skills, about:get('about'), experience:exp, education };
+}
+
+let TALENTS = [];
+let filtered = [];
+
+async function loadTalents(){
+  try{
+    const { cols, rows } = await fetchSheetGViz(SHEET_ID, SHEET_GID);
+    const normCols = cols.map(c => c.normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase());
+    TALENTS = rows.map(v => sheetRowToTalent(normCols, v));
+  }catch(e){
+    console.error('Falha ao carregar Sheets. Usando dados locais.', e);
+    TALENTS = [ { id:'fallback1', name:'Exemplo Talento', photo:'https://i.pravatar.cc/200?img=5', role:'Função', city:'Cidade', address:'Endereço', whatsapp:'+550000000000', skills:['Skill 1','Skill 2'], about:'Perfil de exemplo.', experience:[{company:'Empresa', title:'Cargo', period:'2019–Atual', desc:'Resumo'}], education:['Formação'] } ];
+  }
+}
 
 function setLang(lang){
   currentLang = lang; const L = I18N[lang];
@@ -224,10 +154,7 @@ function setLang(lang){
   document.getElementById('appTitle').textContent = L.title;
   document.getElementById('q').placeholder = L.searchPlaceholder;
   document.getElementById('clear').textContent = L.clear;
-  document.getElementById('signature').textContent = (
-    lang==='en'? I18N.en.createdBy : lang==='es'? I18N.es.createdBy : I18N.pt.createdBy
-  );
-  // repopulate selects with translation
+  document.getElementById('signature').textContent = (lang==='en'? I18N.en.createdBy : lang==='es'? I18N.es.createdBy : I18N.pt.createdBy);
   populateFilters();
   render();
 }
@@ -295,7 +222,6 @@ function viewResume(t){
 }
 
 function downloadResume(t){
-  // Open a new window with printable HTML styled similarly; user can "Save as PDF"
   const L = I18N[currentLang];
   const w = window.open('', '_blank');
   const styles = document.querySelector('style').innerHTML;
@@ -311,9 +237,7 @@ function downloadResume(t){
   w.document.write(`<h2>${L.experience}</h2><ul>${expList}</ul>`);
   w.document.write(`<h2>${L.education}</h2><ul>${eduList}</ul>`);
   w.document.write(`</div></body></html>`);
-  w.document.close();
-  w.focus();
-  setTimeout(()=> w.print(), 300);
+  w.document.close(); w.focus(); setTimeout(()=> w.print(), 300);
 }
 
 function render(){
@@ -359,33 +283,32 @@ function applyFilters(){
   render();
 }
 
-// ===== Events =====
+// ===== Events & Init =====
 setLang('pt');
 
 document.getElementById('lang').addEventListener('change', e=> setLang(e.target.value));
-
 document.getElementById('toggleDark').onclick = ()=> document.body.classList.toggle('dark');
 
-populateFilters();
-render();
+document.getElementById('closeModal').onclick = ()=> document.getElementById('modal').style.display='none';
+document.getElementById('modal').onclick = (e)=>{ if(e.target===document.getElementById('modal')) document.getElementById('modal').style.display='none'; };
 
 ['q','role','city'].forEach(id=> document.getElementById(id).addEventListener('input', applyFilters));
-
 document.getElementById('clear').onclick = ()=>{ document.getElementById('q').value=''; document.getElementById('role').value=''; document.getElementById('city').value=''; applyFilters(); };
 
-// modal events
-const modal = document.getElementById('modal');
-document.getElementById('closeModal').onclick = ()=> modal.style.display='none';
-modal.onclick = (e)=>{ if(e.target===modal) modal.style.display='none'; };
-
 document.addEventListener('click', (e)=>{
-  const btn = e.target.closest('button');
-  if(!btn) return;
+  const btn = e.target.closest('button'); if(!btn) return;
   const act = btn.dataset.act; const id = btn.dataset.id; if(!act||!id) return;
   const t = TALENTS.find(x=>x.id===id); if(!t) return;
   if(act==='view'){ viewResume(t); }
   if(act==='dl'){ downloadResume(t); }
 });
+
+(async ()=>{
+  await loadTalents();
+  populateFilters();
+  filtered = TALENTS.slice();
+  render();
+})();
 </script>
 </body>
 </html>
