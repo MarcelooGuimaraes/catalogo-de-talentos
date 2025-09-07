@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Catálogo de Talentos</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand-blue:#0b5394;--brand-green:#22b14c;
+  --bg-light:#f0f4f8;--bg-dark:#111827;
+  --card-light:#fff;--card-dark:#1f2937;
+  --ink-light:#111827;--ink-dark:#f9fafb;
+  --muted:#6b7280;
+  --shadow:0 8px 24px rgba(0,0,0,.15);
+  --radius:16px;--transition:.3s ease;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,sans-serif;background:var(--bg-light);color:var(--ink-light);transition:background var(--transition),color var(--transition)}
+body.dark{background:var(--bg-dark);color:var(--ink-dark)}
+header{position:sticky;top:0;background:linear-gradient(135deg,var(--brand-blue),var(--brand-green));color:#fff;display:flex;justify-content:space-between;align-items:center;padding:12px 24px;border-bottom:3px solid var(--brand-green);flex-wrap:wrap;z-index:100}
+header h1{margin:0;font-size:clamp(18px,4vw,26px);display:flex;gap:10px;align-items:center}
+header img{height:40px;border-radius:8px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;align-items:center}
+.btn{border:none;padding:10px 14px;border-radius:12px;cursor:pointer;background:#f9fafb;color:#111;font-weight:700;transition:transform var(--transition),background var(--transition),box-shadow var(--transition)}
+body.dark .btn{background:#374151;color:#fff}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.2);background:#e0f2fe}
+body.dark .btn:hover{background:#4b5563}
+.btn.primary{background:linear-gradient(135deg,var(--brand-blue),var(--brand-green));color:#fff}
+.btn.ghost{background:transparent;border:1px solid #e5e7eb}
+.tag{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#eaf5ff;color:#063e66;font-weight:700;font-size:.85rem}
+body.dark .tag{background:#16324a;color:#cdeaff}
+select.lang{appearance:none;border:none;padding:10px 16px;border-radius:12px;font-weight:700;cursor:pointer}
+main.wrap{max-width:1200px;margin:18px auto 36px;padding:0 16px}
+.filter-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:var(--card-light);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px}
+body.dark .filter-bar{background:var(--card-dark)}
+.filter-bar input, .filter-bar select{padding:10px 12px;border-radius:10px;border:1px solid #cdd6df;min-width:200px}
+body.dark .filter-bar input,body.dark .filter-bar select{background:#374151;color:#fff;border-color:#4b5563}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:18px}
+@media(max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card-light);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;display:flex;gap:14px;transition:transform var(--transition)}
+body.dark .card{background:var(--card-dark)}
+.card:hover{transform:translateY(-4px)}
+.avatar{width:88px;height:88px;border-radius:14px;object-fit:cover;border:3px solid #e6f3ff}
+.info{flex:1;display:flex;flex-direction:column;gap:8px}
+.title{display:flex;justify-content:space-between;gap:10px;align-items:start}
+.name{font-weight:800;font-size:1.05rem}
+.meta{color:var(--muted);font-size:.92rem}
+.skills{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+footer{margin-top:24px;text-align:center;color:#555;padding:16px 0;border-top:1px solid #ccc}
+body.dark footer{color:#aaa;border-color:#444}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);justify-content:center;align-items:center;z-index:200}
+.modal{background:#fff;max-width:900px;width:92%;max-height:84vh;overflow:auto;border-radius:20px;padding:20px;position:relative}
+body.dark .modal{background:#1f2937;color:#fff}
+.close-modal{position:absolute;top:10px;right:10px;background:transparent;border:none;font-size:22px;cursor:pointer}
+.resume-header{display:flex;gap:14px;align-items:center;margin-bottom:12px}
+.resume-avatar{width:72px;height:72px;border-radius:12px;object-fit:cover;border:2px solid #e6f3ff}
+.resume-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:720px){.resume-grid{grid-template-columns:1fr}}
+.resume-sec{background:#f6fbff;border:1px solid #d8ecff;padding:12px;border-radius:12px}
+body.dark .resume-sec{background:#0f2133;border-color:#264b6b}
+.print-note{font-size:.85rem;opacity:.8;margin-top:6px}
+</style>
+</head>
+<body>
+<header>
+  <h1>
+    <img src="https://opiniaobrasilia.com.br/wp-content/uploads/2020/12/RenovaDF.jpeg" alt="Logo Renova DF">
+    <span id="appTitle">Catálogo de Talentos</span>
+  </h1>
+  <div class="controls">
+    <select class="lang" id="lang">
+      <option value="pt" selected>🇧🇷 Português</option>
+      <option value="en">🇺🇸 English</option>
+      <option value="es">🇪🇸 Español</option>
+    </select>
+    <button class="btn" id="toggleDark">🌙</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="filter-bar">
+    <input id="q" type="search" placeholder="🔎 Buscar por nome ou habilidade" />
+    <select id="role">
+      <option value="">Todas as profissões</option>
+    </select>
+    <select id="city">
+      <option value="">Todas as cidades</option>
+    </select>
+    <button class="btn" id="clear">Limpar</button>
+    <span class="tag" id="count">0 resultados</span>
+  </section>
+
+  <section class="grid" id="grid"></section>
+</main>
+
+<div class="modal-bg" id="modal">
+  <div class="modal" id="modalInner">
+    <button class="close-modal" id="closeModal">✖</button>
+    <div id="resume"></div>
+  </div>
+</div>
+
+<footer id="signature">Criado por Marcelo Emanoel</footer>
+
+<script>
+// ===== I18N =====
+const I18N = {
+  pt: {
+    htmlLang: 'pt-BR', title:'Catálogo de Talentos',
+    searchPlaceholder:'🔎 Buscar por nome ou habilidade',
+    allRoles:'Todas as profissões', allCities:'Todas as cidades', clear:'Limpar', results: n=> `${n} resultados`,
+    job:'Profissão', city:'Cidade', address:'Endereço', skills:'Habilidades', about:'Sobre', experience:'Experiência', education:'Formação', contacts:'Contatos',
+    viewCV:'🗂️ Ver currículo', download:'⬇️ Baixar currículo', whatsapp:'💬 WhatsApp', createdBy:'Criado por Marcelo Emanoel'
+  },
+  en: {
+    htmlLang: 'en', title:'Talent Catalog',
+    searchPlaceholder:'🔎 Search by name or skill',
+    allRoles:'All professions', allCities:'All cities', clear:'Clear', results: n=> `${n} results`,
+    job:'Profession', city:'City', address:'Address', skills:'Skills', about:'About', experience:'Experience', education:'Education', contacts:'Contacts',
+    viewCV:'🗂️ View résumé', download:'⬇️ Download résumé', whatsapp:'💬 WhatsApp', createdBy:'Created by Marcelo Emanoel'
+  },
+  es: {
+    htmlLang: 'es', title:'Catálogo de Talentos',
+    searchPlaceholder:'🔎 Buscar por nombre o habilidad',
+    allRoles:'Todas las profesiones', allCities:'Todas las ciudades', clear:'Limpiar', results: n=> `${n} resultados`,
+    job:'Profesión', city:'Ciudad', address:'Dirección', skills:'Habilidades', about:'Acerca de', experience:'Experiencia', education:'Formación', contacts:'Contactos',
+    viewCV:'🗂️ Ver currículum', download:'⬇️ Descargar currículum', whatsapp:'💬 WhatsApp', createdBy:'Creado por Marcelo Emanoel'
+  }
+};
+
+let currentLang='pt';
+
+// ===== Sample Data (mock) =====
+const TALENTS = [
+  {
+    id:'t1',
+    name:'Ana Beatriz Silva',
+    photo:'https://i.pravatar.cc/200?img=5',
+    role:'Analista de Projetos',
+    city:'Brasília, DF',
+    address:'Asa Norte, CLN 210',
+    whatsapp:'+5561999990001',
+    skills:['PMO','Scrum','Excel','Power BI'],
+    about:'Profissional com 5+ anos em PMO, foco em indicadores e melhoria contínua.',
+    experience:[
+      {company:'TechNova', title:'Project Analyst', period:'2022–Atual', desc:'KPIs, cronogramas e gestão de riscos.'},
+      {company:'InovaBR', title:'Assistente de Projetos', period:'2019–2022', desc:'Suporte a times ágeis e documentação.'}
+    ],
+    education:['Bacharelado em Administração – UNB (2018)']
+  },
+  {
+    id:'t2',
+    name:'Carlos Eduardo Ramos',
+    photo:'https://i.pravatar.cc/200?img=12',
+    role:'Desenvolvedor Front-end',
+    city:'Sobradinho, DF',
+    address:'Qd 8, Conj B',
+    whatsapp:'+5561988882222',
+    skills:['JavaScript','React','CSS','Acessibilidade'],
+    about:'Front-end focado em performance e acessibilidade web.',
+    experience:[
+      {company:'WebWorks', title:'Front-end Dev', period:'2021–Atual', desc:'SPAs, otimização e testes.'},
+      {company:'Freelancer', title:'Web Dev', period:'2018–2021', desc:'Sites institucionais e landing pages.'}
+    ],
+    education:['Tecnólogo em Sistemas – IESB (2017)']
+  },
+  {
+    id:'t3',
+    name:'Mariana Lopes',
+    photo:'https://i.pravatar.cc/200?img=32',
+    role:'Designer UX/UI',
+    city:'Ceilândia, DF',
+    address:'P Norte',
+    whatsapp:'+5561977773333',
+    skills:['UX Research','Figma','Design System','Prototipagem'],
+    about:'Designer centrada no usuário com experiência em produtos educacionais.',
+    experience:[
+      {company:'EduTech', title:'UX Designer', period:'2020–Atual', desc:'Pesquisas e protótipos de alta fidelidade.'},
+      {company:'Studio Criativo', title:'UI Designer', period:'2017–2020', desc:'Identidade visual e web design.'}
+    ],
+    education:['Bacharelado em Design – UCB (2016)']
+  },
+  {
+    id:'t4',
+    name:'João Pedro Alves',
+    photo:'https://i.pravatar.cc/200?img=15',
+    role:'Eletricista Predial',
+    city:'Taguatinga, DF',
+    address:'QNL 10',
+    whatsapp:'+5561966661111',
+    skills:['Instalações','Manutenção','NR-10','Leitura de projetos'],
+    about:'Atuação em instalações residenciais e comerciais, com certificação NR-10.',
+    experience:[
+      {company:'Construtora Alfa', title:'Eletricista', period:'2019–Atual', desc:'Montagem de quadros e cabeamento.'}
+    ],
+    education:['Curso Técnico em Eletrotécnica – SENAI (2018)']
+  },
+  {
+    id:'t5',
+    name:'Sofia Martins',
+    photo:'https://i.pravatar.cc/200?img=45',
+    role:'Auxiliar Administrativo',
+    city:'Gama, DF',
+    address:'Setor Central',
+    whatsapp:'+5561955554444',
+    skills:['Atendimento','Planilhas','Arquivamento','Redação'],
+    about:'Organizada, comunicativa e orientada a resultados.',
+    experience:[
+      {company:'ServMais', title:'Aux. Administrativo', period:'2020–Atual', desc:'Atendimento e controle de documentos.'}
+    ],
+    education:['Ensino Médio Completo (2019)']
+  }
+];
+
+// ===== State =====
+let filtered = TALENTS.slice();
+
+function setLang(lang){
+  currentLang = lang; const L = I18N[lang];
+  document.documentElement.lang = L.htmlLang;
+  document.getElementById('appTitle').textContent = L.title;
+  document.getElementById('q').placeholder = L.searchPlaceholder;
+  document.getElementById('clear').textContent = L.clear;
+  document.getElementById('signature').textContent = (
+    lang==='en'? I18N.en.createdBy : lang==='es'? I18N.es.createdBy : I18N.pt.createdBy
+  );
+  // repopulate selects with translation
+  populateFilters();
+  render();
+}
+
+function normalize(s){ return (s||'').toString().toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu,''); }
+
+function populateFilters(){
+  const L = I18N[currentLang];
+  const roles = Array.from(new Set(TALENTS.map(t=>t.role))).sort();
+  const cities = Array.from(new Set(TALENTS.map(t=>t.city))).sort();
+  const roleSel = document.getElementById('role');
+  const citySel = document.getElementById('city');
+  roleSel.innerHTML = `<option value="">${L.allRoles}</option>` + roles.map(r=>`<option value="${r}">${r}</option>`).join('');
+  citySel.innerHTML = `<option value="">${L.allCities}</option>` + cities.map(c=>`<option value="${c}">${c}</option>`).join('');
+}
+
+function whatsappLink(phone, name){
+  const text = encodeURIComponent(
+    currentLang==='en'? `Hello ${name}! I found your profile on the talent catalog.` :
+    currentLang==='es'? `¡Hola ${name}! Encontré tu perfil en el catálogo de talentos.` :
+    `Olá ${name}! Encontrei seu perfil no catálogo de talentos.`
+  );
+  const num = phone.replace(/[^\d]/g,'');
+  return `https://wa.me/${num}?text=${text}`;
+}
+
+function viewResume(t){
+  const L = I18N[currentLang];
+  const root = document.getElementById('resume');
+  const expList = t.experience.map(e=>`<li><strong>${e.title}</strong> — ${e.company} <em>(${e.period})</em><br>${e.desc}</li>`).join('');
+  const eduList = t.education.map(e=>`<li>${e}</li>`).join('');
+  root.innerHTML = `
+    <div class="resume-header">
+      <img class="resume-avatar" src="${t.photo}" alt="${t.name}">
+      <div>
+        <h2 style="margin:0">${t.name}</h2>
+        <div class="meta">${L.job}: <strong>${t.role}</strong> · ${L.city}: <strong>${t.city}</strong></div>
+        <div class="meta">${L.address}: ${t.address}</div>
+        <div class="skills" style="margin-top:6px">${t.skills.map(s=>`<span class="tag">${s}</span>`).join(' ')}</div>
+      </div>
+    </div>
+    <div class="resume-grid">
+      <div class="resume-sec">
+        <h3>${L.about}</h3>
+        <p>${t.about}</p>
+      </div>
+      <div class="resume-sec">
+        <h3>${L.contacts}</h3>
+        <p><a href="${whatsappLink(t.whatsapp,t.name)}" target="_blank">${I18N[currentLang].whatsapp}</a></p>
+        <p>${L.city}: ${t.city}</p>
+        <p>${L.address}: ${t.address}</p>
+      </div>
+      <div class="resume-sec" style="grid-column:1/-1">
+        <h3>${L.experience}</h3>
+        <ul style="padding-left:18px">${expList}</ul>
+      </div>
+      <div class="resume-sec" style="grid-column:1/-1">
+        <h3>${L.education}</h3>
+        <ul style="padding-left:18px">${eduList}</ul>
+      </div>
+    </div>
+    <p class="print-note">${currentLang==='en'?'Tip: Use your browser to print to PDF.':'Dica: use o navegador para imprimir em PDF.'}</p>
+  `;
+  document.getElementById('modal').style.display='flex';
+}
+
+function downloadResume(t){
+  // Open a new window with printable HTML styled similarly; user can "Save as PDF"
+  const L = I18N[currentLang];
+  const w = window.open('', '_blank');
+  const styles = document.querySelector('style').innerHTML;
+  const expList = t.experience.map(e=>`<li><strong>${e.title}</strong> — ${e.company} <em>(${e.period})</em><br>${e.desc}</li>`).join('');
+  const eduList = t.education.map(e=>`<li>${e}</li>`).join('');
+  w.document.write(`<!DOCTYPE html><html lang="${I18N[currentLang].htmlLang}"><head><meta charset="utf-8"><title>${t.name} — CV</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet"><style>${styles} @media print{body{background:#fff;color:#000} .modal-bg{display:block} }</style></head><body>`);
+  w.document.write(`<div style="max-width:900px;margin:20px auto;padding:20px">`);
+  w.document.write(`<h1 style="margin:0 0 8px 0">${t.name}</h1>`);
+  w.document.write(`<p>${L.job}: <strong>${t.role}</strong> · ${L.city}: <strong>${t.city}</strong> · ${L.address}: ${t.address}</p>`);
+  w.document.write(`<img src="${t.photo}" style="width:120px;height:120px;border-radius:14px;object-fit:cover;border:3px solid #e6f3ff;margin:8px 0">`);
+  w.document.write(`<h2>${L.about}</h2><p>${t.about}</p>`);
+  w.document.write(`<h2>${L.skills}</h2><p>${t.skills.join(' · ')}</p>`);
+  w.document.write(`<h2>${L.experience}</h2><ul>${expList}</ul>`);
+  w.document.write(`<h2>${L.education}</h2><ul>${eduList}</ul>`);
+  w.document.write(`</div></body></html>`);
+  w.document.close();
+  w.focus();
+  setTimeout(()=> w.print(), 300);
+}
+
+function render(){
+  const grid = document.getElementById('grid');
+  const L = I18N[currentLang];
+  grid.innerHTML = '';
+  document.getElementById('count').textContent = L.results(filtered.length);
+  filtered.forEach(t=>{
+    const card = document.createElement('article');
+    card.className='card';
+    card.innerHTML = `
+      <img class="avatar" src="${t.photo}" alt="${t.name}">
+      <div class="info">
+        <div class="title">
+          <div>
+            <div class="name">${t.name}</div>
+            <div class="meta">${L.job}: <strong>${t.role}</strong> · ${L.city}: ${t.city}</div>
+            <div class="meta">${L.address}: ${t.address}</div>
+          </div>
+        </div>
+        <div class="skills">${t.skills.map(s=>`<span class='tag'>${s}</span>`).join(' ')}</div>
+        <div class="actions">
+          <a class="btn" href="${whatsappLink(t.whatsapp,t.name)}" target="_blank">${L.whatsapp}</a>
+          <button class="btn" data-act="view" data-id="${t.id}">${L.viewCV}</button>
+          <button class="btn primary" data-act="dl" data-id="${t.id}">${L.download}</button>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function applyFilters(){
+  const q = normalize(document.getElementById('q').value);
+  const role = document.getElementById('role').value;
+  const city = document.getElementById('city').value;
+  filtered = TALENTS.filter(t=>{
+    const matchesQ = !q || normalize(t.name).includes(q) || t.skills.some(s=>normalize(s).includes(q));
+    const matchesRole = !role || t.role===role;
+    const matchesCity = !city || t.city===city;
+    return matchesQ && matchesRole && matchesCity;
+  });
+  render();
+}
+
+// ===== Events =====
+setLang('pt');
+
+document.getElementById('lang').addEventListener('change', e=> setLang(e.target.value));
+
+document.getElementById('toggleDark').onclick = ()=> document.body.classList.toggle('dark');
+
+populateFilters();
+render();
+
+['q','role','city'].forEach(id=> document.getElementById(id).addEventListener('input', applyFilters));
+
+document.getElementById('clear').onclick = ()=>{ document.getElementById('q').value=''; document.getElementById('role').value=''; document.getElementById('city').value=''; applyFilters(); };
+
+// modal events
+const modal = document.getElementById('modal');
+document.getElementById('closeModal').onclick = ()=> modal.style.display='none';
+modal.onclick = (e)=>{ if(e.target===modal) modal.style.display='none'; };
+
+document.addEventListener('click', (e)=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  const act = btn.dataset.act; const id = btn.dataset.id; if(!act||!id) return;
+  const t = TALENTS.find(x=>x.id===id); if(!t) return;
+  if(act==='view'){ viewResume(t); }
+  if(act==='dl'){ downloadResume(t); }
+});
+</script>
+</body>
+</html>
+
